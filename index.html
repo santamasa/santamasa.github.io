@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>santamasa</title>
+    <title>Portfolio</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
@@ -42,6 +42,19 @@
             height: 24px;
             vertical-align: middle;
         }
+        #wallet-connect-button {
+            margin-top: 30px;
+            padding: 10px 20px;
+            background-color: #1e90ff;
+            border: none;
+            color: #ffffff;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+        #wallet-connect-button:hover {
+            background-color: #3aa0ff;
+        }
     </style>
 </head>
 <body>
@@ -50,7 +63,7 @@
     <p>I have a proven track record of managing and contributing to various blockchain initiatives, working closely with development teams, fostering community engagement, and optimizing tokenomics strategies.</p>
     <p>My skills include project management, smart contract development, and making open-source contributions.</p>
     <p>I am passionate about decentralized technologies and committed to advancing the growth and adoption of innovative crypto solutions, aiming to build sustainable and impactful blockchain projects.</p>
-    <div class="social-links">
+ <div class="social-links">
         <a href="https://x.com/0xsantamasa" target="_blank">
             <img src="https://img.icons8.com/ios-filled/50/ffffff/twitter.png" class="icon" alt="Twitter">
         </a>
@@ -58,5 +71,53 @@
             <img src="https://img.icons8.com/ios-filled/50/ffffff/github.png" class="icon" alt="GitHub">
         </a>
     </div>
+    <button id="wallet-connect-button">Connect Wallet</button>
+
+    <!-- Web3Modal and WalletConnect libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/web3@1.7.0/dist/web3.min.js"></script>
+    <script src="https://unpkg.com/@walletconnect/web3-provider@1.7.9/dist/umd/index.min.js"></script>
+    <script src="https://unpkg.com/web3modal"></script>
+
+    <script>
+        async function connectWallet() {
+            // Создание провайдера WalletConnect
+            const providerOptions = {
+                walletconnect: {
+                    package: window.WalletConnectProvider.default,
+                    options: {
+                        infuraId: "YOUR_INFURA_ID" // Замените на ваш Infura ID или другой RPC URL
+                    }
+                }
+            };
+
+            // Инициализация Web3Modal
+            const web3Modal = new Web3Modal.default({
+                cacheProvider: false,
+                providerOptions,
+                theme: "dark"
+            });
+
+            try {
+                // Открытие модального окна для подключения кошелька
+                const provider = await web3Modal.connect();
+                const web3 = new Web3(provider);
+
+                // Получение списка аккаунтов
+                const accounts = await web3.eth.getAccounts();
+                alert("Connected: " + accounts[0]);
+
+                // Подписываем событие отключения
+                provider.on("disconnect", () => {
+                    alert("Wallet disconnected");
+                });
+
+            } catch (error) {
+                console.error("Could not connect to wallet:", error);
+            }
+        }
+
+        // Добавление события на кнопку
+        document.getElementById("wallet-connect-button").addEventListener("click", connectWallet);
+    </script>
 </body>
 </html>
